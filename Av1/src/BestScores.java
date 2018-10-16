@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BestScores implements Serializable {
+public class BestScores implements Scores, Serializable {
 
     private List<GameEntry> best;
     private int cont;
