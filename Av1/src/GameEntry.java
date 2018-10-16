@@ -1,4 +1,6 @@
-public class GameEntry {
+import java.io.Serializable;
+
+public class GameEntry implements Serializable {
     private String name;
     private int score;
 
