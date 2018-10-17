@@ -1,9 +1,14 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import sun.management.MappedMXBeanType;
+
+import javax.xml.bind.SchemaOutputResolver;
 
 public class ScoresSerializacao {
     public static void main(String args[]){
@@ -23,34 +28,27 @@ public class ScoresSerializacao {
         best.add(new GameEntry("Norberto", 6));
         best.add(new GameEntry("Chiara", 9));
 
-        leArqEmBin();
         escreveArqEmBin(best);
+        leArqEmBin();
 
-        leAqrSerializado();
         escreveArqSerializado(best);
+        leAqrSerializado();
 
-        leArqEmCSV();
         escreveArqEmCSV(best);
+        leArqEmCSV();
 
-        leArqEmJSON();
         escreveArqEmJSON(best);
+        leArqEmJSON();
 
     }
 
     public static void escreveArqEmBin(BestScores best){
         try{
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-            String content = new String(output.toByteArray());
-
-            content += best.toString();
-
             FileOutputStream out = new FileOutputStream("coleção_de_Scores.bin");
-            out.write(content.getBytes());
-            out.flush();
-            out.close();
+            ObjectOutputStream myStream = new ObjectOutputStream(out);
 
-            System.out.println(content);
+            myStream.writeObject(best);
+            myStream.close();
 
         }catch(Exception e) {
             System.out.println("Erro = " + e);
@@ -60,19 +58,15 @@ public class ScoresSerializacao {
     public static void leArqEmBin() {
         try {
             File origin = new File("coleção_de_Scores.bin");
-            BufferedInputStream input = new BufferedInputStream(new FileInputStream(origin));
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            ObjectInputStream myStream = new ObjectInputStream(new FileInputStream(origin));
 
-            int i = 0;
+            BestScores best = (BestScores) myStream.readObject();
 
-            while ((i = input.read()) != -1) {
-                output.write(i);
-                System.out.println( i  + " - " + ( (char) i) );
-            }
-
-            input.close();
+            System.out.println(best.toString());
 
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch(ClassNotFoundException e){
             e.printStackTrace();
         }
     }
